@@ -32,7 +32,7 @@ class ContactForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={
                 'placeholder': '+1 555 123 4567',
                 'inputmode': 'tel',
-                'pattern': '[+0-9()\-\s]{7,20}',
+                'pattern': r'[+0-9()\-\s]{7,20}',
                 'aria_describedby': 'phone-hint'
             }),
             'message': forms.Textarea(attrs={
