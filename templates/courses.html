@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+
+<section class="">
+    <div class="container">
+        <h2 style='font-size: 1.5rem;'>Courses</h2>
+        <div class="courses">
+            {% for course in courses %}
+                <div class="course">
+                    <div class="course-thumbnail">
+                        <a href="{% url 'course_details' instructor=course.instructor slug=course.slug %}">
+                            <img src="{{ course.thumbnail.url }}" alt="Thumbnail for {{ course.title }}" loading="lazy" decoding="async">
+                        </a>
+                    </div>
+                    <div class="course-details">
+                        <a href="{% url 'course_details' instructor=course.instructor slug=course.slug %}"><h3 class="clamp-2" title="{{ course.title }}">{{ course.title }}</h3></a>
+                        <p class="instructor" style="display:inline-flex; column-gap:.75rem; align-items:center;">
+                            <img class="instructor-img" src="https://api.dicebear.com/5.x/shapes/svg?seed={{ course.instructor }}" alt="Avatar {{ course.instructor }}" loading="lazy" decoding="async">
+                            <span class="clamp-1">Instructor: {{ course.instructor }}</span>
+                        </p>
+                        <p class="course-desc clamp-3" title="{{ course.description|default:'Course description' }}">{{ course.description }}</p>
+                        <p class="course-lvl-time">{{ course.level }} &middot; {{ course.duration }} Hours</p>
+                        <a href="{% url 'course_details' instructor=course.instructor slug=course.slug %}" class="btn enroll-btn">Enroll now</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

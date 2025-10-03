@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block title %}Sign In{% endblock %}
+
+{% block content %}
+<section class="auth-page refined-auth split-auth compact-auth" aria-labelledby="login-heading">
+  <div class="auth-split-wrapper">
+    <!-- Left Visual / Marketing Panel (trimmed: removed heading, tagline, benefits) -->
+    <aside class="auth-visual" aria-label="Decorative illustration">
+      <div class="visual-media">
+        <picture>
+          <source srcset="{% static 'img/login-img.webp' %}" type="image/webp">
+          <img src="{% static 'img/login-img.webp' %}" alt="Learning illustration" loading="lazy" decoding="async">
+        </picture>
+      </div>
+      <!-- Removed: visual-overlay content per user request -->
+    </aside>
+
+    <!-- Right Form Panel -->
+    <div class="auth-form-panel" role="form" aria-describedby="login-intro">
+      <div class="auth-form-surface" data-surface>
+        <header class="auth-header tight">
+          <h1 id="login-heading" class="auth-title">Welcome back <span class="wave" aria-hidden="true">👋</span></h1>
+          <p id="login-intro" class="auth-subtitle">Sign in to continue your learning journey.</p>
+        </header>
+
+        {% get_providers as socialaccount_providers %}
+
+        {% if form.errors %}
+          <div class="error-summary" role="alert" aria-live="assertive">
+            <p><strong>{% trans "Please fix the following issues:" %}</strong></p>
+            <ul>
+              {% for field in form %}
+                {% for error in field.errors %}
+                  <li><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></li>
+                {% endfor %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'account_login' %}" novalidate class="enhanced-auth-form" data-auth-form>
+          {% csrf_token %}
+          <div class="field-stack">
+            {% for field in form.visible_fields %}
+              {% if field.name != 'remember' %}
+                <div class="form-row modern{% if field.errors %} has-error{% endif %}" data-animate="fade-up">
+                  <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}{% if field.field.required %}<span class="req" aria-hidden="true">*</span>{% endif %}</label>
+                  <div class="input-shell{% if field.name == 'password' %} with-toggle{% endif %}">
+                    {% if field.name == 'login' %}
+                      <span class="input-leading" aria-hidden="true">👤</span>
+                    {% elif field.name == 'password' %}
+                      <span class="input-leading" aria-hidden="true">🔒</span>
+                    {% endif %}
+                    {{ field }}
+                    {% if field.name == 'password' %}
+                      <button type="button" class="password-toggle-btn" data-toggle-password="{{ field.id_for_label }}" aria-label="Show password" title="Show/Hide password">👁</button>
+                    {% endif %}
+                  </div>
+                  {% if field.name == 'password' %}<div class="caps-lock-hint" aria-live="polite" data-caps-hint></div>{% endif %}
+                  {% if field.help_text %}<div class="field-hint">{{ field.help_text }}</div>{% endif %}
+                  {% for error in field.errors %}<div class="error-msg">{{ error }}</div>{% endfor %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+          
+          <div class="auth-actions rowed">
+            <a class="auth-link" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+            <button class="btn" type="submit">Sign In</button>
+          </div>
+        </form>
+
+        {% if socialaccount_providers %}
+          <div class="provider-separator"><span>Or continue with</span></div>
+          <div class="provider-buttons alt-layout">
+            <a class="login-via-btn provider-google" href="{% provider_login_url 'google' %}"><span class="provider-icon" aria-hidden="true">🟢</span> Google</a>
+          </div>
+        {% endif %}
+        
+        <p class="auth-switch">New here? <a href="{{ signup_url }}">Create an account</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+  {{ block.super }}
+  <script>
+  // Enhanced Password visibility toggle
+  (function(){
+    document.addEventListener('click', function(e){
+      const btn = e.target.closest('[data-toggle-password]');
+      if(!btn) return;
+      
+      const id = btn.getAttribute('data-toggle-password');
+      const input = document.getElementById(id);
+      if(!input) return;
+      
+      if(input.type === 'password'){ 
+        input.type = 'text'; 
+        btn.setAttribute('aria-label', 'Hide password'); 
+        btn.classList.add('revealed');
+        btn.innerHTML = '🙈'; // Change to hide icon
+        btn.title = 'Hide password';
+      } else { 
+        input.type = 'password'; 
+        btn.setAttribute('aria-label', 'Show password'); 
+        btn.classList.remove('revealed');
+        btn.innerHTML = '👁'; // Change back to show icon
+        btn.title = 'Show password';
+      }
+    });
+  })();
+  // Caps Lock detection
+  (function(){
+    const pwd = document.getElementById('id_password');
+    if(!pwd) return;
+    const hint = document.querySelector('[data-caps-hint]');
+    const update = (e) => {
+      if(!hint) return;
+      if(e.getModifierState && e.getModifierState('CapsLock')) {
+        hint.textContent = 'Caps Lock is ON';
+        hint.classList.add('show');
+      } else if(e.type === 'focusout') {
+        hint.textContent = '';
+        hint.classList.remove('show');
+      } else if(hint.textContent) {
+        hint.textContent = '';
+        hint.classList.remove('show');
+      }
+    };
+    ['keydown','keyup'].forEach(ev => pwd.addEventListener(ev, update));
+    pwd.addEventListener('focusout', update);
+  })();
+  </script>
+{% endblock extra_js %}

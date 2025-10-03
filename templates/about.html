@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About{% endblock title %}
+
+{% block content %}
+
+<!-- Hero / Mission Section -->
+<section class="about-hero">
+  <div class="container about-hero__content">
+    <div class="about-hero__text flow" style="--flow-space:1.2rem;">
+      <h1 class="about-hero__title">SkillMate</h1>
+      <p class="about-hero__lead">Our mission is to empower individuals with the skills and knowledge they need to achieve their goals through a wide range of online courses and training programs. The platform is designed for learners of every level—helping you advance your career or explore something entirely new.</p>
+      <div>
+        <a href="{% url 'account_signup' %}" class="btn">Join SkillMate Today</a>
+      </div>
+    </div>
+    <figure class="about-hero__image">
+      <img src="{% static 'img/about-hero-img.webp' %}" alt="Learner engaging with SkillMate platform" width="640" height="520" loading="lazy">
+    </figure>
+  </div>
+</section>
+
+<!-- Trusted Brands Section -->
+<section class="about-brands">
+  <div class="container brands-content">
+    <h2 class="section-title center">Trusted by leading brands</h2>
+    <div class="brands-grid" aria-label="Partner & technology logos">
+      <div class="brand" aria-label="OpenAI"><img class="brand-logo" src="{% static 'img/openai.webp' %}" alt="OpenAI logo" width="140" height="50" loading="lazy"></div>
+      <div class="brand" aria-label="Google"><img class="brand-logo" src="{% static 'img/google.webp' %}" alt="Google logo" width="140" height="50" loading="lazy"></div>
+      <div class="brand" aria-label="Microsoft"><img class="brand-logo" src="{% static 'img/microsoft.webp' %}" alt="Microsoft logo" width="160" height="50" loading="lazy"></div>
+      <div class="brand" aria-label="Notion"><img class="brand-logo" src="{% static 'img/notion.webp' %}" alt="Notion logo" width="120" height="50" loading="lazy"></div>
+      <div class="brand" aria-label="LinkedIn"><img class="brand-logo" src="{% static 'img/linkedin.webp' %}" alt="LinkedIn logo" width="140" height="50" loading="lazy"></div>
+      <div class="brand" aria-label="GitHub"><img class="brand-logo" src="{% static 'img/github.webp' %}" alt="GitHub logo" width="140" height="50" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Who We Are Section -->
+<section class="about-who">
+  <div class="container about-skillmate">
+    <figure class="about-skillmate__media">
+      <img src="{% static 'img/about-study.webp' %}" alt="Person studying online" width="640" height="520" loading="lazy">
+    </figure>
+    <div class="about-skillmate__text flow" style="--flow-space:1rem;">
+      <h2 class="section-title">Who we are</h2>
+      <p>SkillMate is an innovative online learning platform offering a wide range of courses and training programs designed to help you achieve your professional goals.</p>
+      <p>Whether you want to advance your career, start a new journey, or simply learn something exciting, SkillMate gives you a personalized, engaging learning experience so you can master new skills at your own pace.</p>
+      <a href="{% url 'account_signup' %}" class="btn btn-outline">Get Started</a>
+    </div>
+  </div>
+</section>
+
+<!-- Growth Metrics Section -->
+<section class="about-numbers">
+  <div class="container numbers-content">
+    <h2 class="section-title center">We are growing each year</h2>
+    <div class="metrics" aria-label="Platform growth statistics">
+      <div class="metric-card" role="group" aria-label="Students enrolled">
+        <h3>Students</h3>
+        <p><span class="metric-value" data-count="26500">26,500+</span></p>
+      </div>
+      <div class="metric-card" role="group" aria-label="Active instructors">
+        <h3>Instructors</h3>
+        <p><span class="metric-value" data-count="1200">1,200+</span></p>
+      </div>
+      <div class="metric-card" role="group" aria-label="Courses available">
+        <h3>Courses</h3>
+        <p><span class="metric-value" data-count="540">540+</span></p>
+      </div>
+      <div class="metric-card" role="group" aria-label="Learning hours delivered">
+        <h3>Learning Hours</h3>
+        <p><span class="metric-value" data-count="180000">180k+</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}

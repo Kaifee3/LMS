@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact{% endblock title %}
+
+{% block content %}
+
+<section class="contact-page" aria-labelledby="contact-heading">
+  <div class="container contact-layout">
+    <header class="contact-header flow" style="--flow-space:1rem;">
+      <h1 id="contact-heading" class="contact-title">Get in touch</h1>
+      <p class="contact-subtitle">We'd love to hear your feedback and questions. Our average response time is under <strong>30 minutes</strong>.</p>
+    </header>
+
+    <div class="contact-grid">
+      <div class="contact-media">
+        <figure class="contact-figure">
+          <img src="{% static 'img/contact-img.webp' %}" alt="Person communicating online" width="640" height="520" loading="lazy" class="contact-illustration">
+        </figure>
+        <div class="contact-info-cards">
+          <div class="info-card" aria-label="Support email">
+            <h3>Email</h3>
+            <p><a href="mailto:support@skillmate.example" class="info-link">support@skillmate.example</a></p>
+          </div>
+          <div class="info-card" aria-label="Phone line">
+            <h3>Phone</h3>
+            <p><a href="tel:+1000000000" class="info-link">+1 (000) 000‑0000</a></p>
+          </div>
+          <div class="info-card" aria-label="Office hours">
+            <h3>Hours</h3>
+            <p>Mon–Fri: 9am – 6pm (UTC)</p>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form enhanced-contact-form" method="post" action="{% url 'contact' %}" novalidate aria-describedby="contact-help" data-js-contact-form>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="form-errors" role="alert">
+            <ul>
+              {% for err in form.non_field_errors %}<li>{{ err }}</li>{% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+        <div class="form-row{% if form.name.errors %} has-error{% endif %}">
+          <label for="id_name">Name <span class="req" aria-hidden="true">*</span></label>
+          {{ form.name }}
+          <small class="field-hint" id="name-hint">Enter your full name.</small>
+          {% if form.name.errors %}<small class="error-list" role="alert">{{ form.name.errors.as_text|linebreaksbr }}</small>{% endif %}
+        </div>
+        <div class="form-row{% if form.email.errors %} has-error{% endif %}">
+          <label for="id_email">Email <span class="req" aria-hidden="true">*</span></label>
+          {{ form.email }}
+          <small class="field-hint" id="email-hint">We'll never share your email.</small>
+          {% if form.email.errors %}<small class="error-list" role="alert">{{ form.email.errors.as_text|linebreaksbr }}</small>{% endif %}
+        </div>
+        <div class="form-row{% if form.phone.errors %} has-error{% endif %}">
+          <label for="id_phone">Phone</label>
+          {{ form.phone }}
+          <small class="field-hint" id="phone-hint">Optional. Include country code.</small>
+          {% if form.phone.errors %}<small class="error-list" role="alert">{{ form.phone.errors.as_text|linebreaksbr }}</small>{% endif %}
+        </div>
+        <div class="form-row{% if form.message.errors %} has-error{% endif %}">
+          <label for="id_message">Message <span class="req" aria-hidden="true">*</span></label>
+          {{ form.message }}
+          <small class="field-hint">Be as detailed as possible so we can help faster.</small>
+          {% if form.message.errors %}<small class="error-list" role="alert">{{ form.message.errors.as_text|linebreaksbr }}</small>{% endif %}
+        </div>
+        {{ form.website }} {# honeypot #}
+        <div class="form-row form-actions">
+          <button id="submit-button" type="submit" class="btn">Send Message</button>
+          <p class="form-status" role="status" aria-live="polite" hidden></p>
+        </div>
+        <p id="contact-help" class="form-disclaimer">By submitting, you agree to our <a href="/contact">privacy policy</a>.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+// Client-side help & progressive enhancement
+(function(){
+  var form = document.querySelector('[data-js-contact-form]');
+  if(!form) return;
+  var statusEl = form.querySelector('.form-status');
+  form.addEventListener('submit', function(){
+    if(statusEl){ statusEl.hidden=false; statusEl.textContent='Sending...'; }
+  });
+  // Live character count for message
+  var msg = form.querySelector('#id_message');
+  if(msg){
+    var counter = document.createElement('div');
+    counter.className='char-counter';
+    counter.style.fontSize='.75rem';
+    counter.style.textAlign='right';
+    msg.parentElement.appendChild(counter);
+    var max = parseInt(msg.getAttribute('maxlength')||'2000',10);
+    var update = function(){ counter.textContent = msg.value.length + '/' + max; };
+    msg.addEventListener('input', update); update();
+  }
+})();
+</script>
+
+{% endblock content %}

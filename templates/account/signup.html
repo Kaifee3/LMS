@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% load account socialaccount %}
+
+{% block title %}Sign up{% endblock %}
+
+{% block content %}
+
+<section class="split-auth" style="padding: 0; min-height: calc(100vh - var(--dynamic-header-height, 5rem));">
+  <div class="auth-split-wrapper">
+    <!-- Left side - Image Only -->
+    <div class="auth-visual">
+      <div class="visual-media">
+        <img src="{% static 'img/signup-img.webp' %}" alt="Join our learning community" loading="lazy">
+      </div>
+    </div>
+
+    <!-- Right side - Signup Form -->
+    <div class="auth-form-panel">
+      <div class="enhanced-auth-form">
+        <header class="auth-header tight">
+          <h1 id="signup-heading" class="auth-title">Create your account <span class="wave" aria-hidden="true"></span></h1>
+          <p class="auth-subtitle">It's fast and free. Start building your skills in minutes.</p>
+        </header>
+        
+        {% if form.non_field_errors %}
+          <div class="error-summary" role="alert">
+            <p>Please correct the following errors:</p>
+            <ul>
+              {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <form id="signup_form" method="post" action="{% url 'account_signup' %}" class="auth-form" novalidate data-auth-form>
+          {% csrf_token %}
+          <div class="field-stack">
+            {% for field in form.visible_fields %}
+              <div class="form-row modern{% if field.errors %} has-error{% endif %}">
+                <label for="{{ field.id_for_label }}" class="form-label">
+                  {{ field.label }}{% if field.field.required %}<span class="req" aria-hidden="true">*</span>{% endif %}
+                </label>
+                <div class="input-shell{% if field.name == 'password1' or field.name == 'password2' %} with-toggle{% endif %}">
+                  {% if field.name == 'username' %}
+                    <span class="input-leading" aria-hidden="true">👤</span>
+                  {% elif field.name == 'email' %}
+                    <span class="input-leading" aria-hidden="true">✉️</span>
+                  {% elif field.name == 'password1' or field.name == 'password2' %}
+                    <span class="input-leading" aria-hidden="true">🔒</span>
+                  {% endif %}
+                  {{ field }}
+                  {% if field.name == 'password1' or field.name == 'password2' %}
+                    <button type="button" class="password-toggle-btn" data-toggle-password="{{ field.id_for_label }}" aria-label="Show password">👁️</button>
+                  {% endif %}
+                </div>
+                {% if field.help_text %}<div class="field-hint">{{ field.help_text }}</div>{% endif %}
+                {% for error in field.errors %}<div class="error-msg">{{ error }}</div>{% endfor %}
+              </div>
+            {% endfor %}
+          </div>
+          
+          {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+          
+          <div class="auth-actions rowed">
+            <button class="btn" type="submit">Create Account</button>
+          </div>
+        </form>
+        
+        <div class="provider-separator"><span>or sign up with</span></div>
+        <div class="provider-buttons alt-layout">
+          <a class="login-via-btn" href="{% provider_login_url 'google' %}">
+            <span class="provider-icon">🌐</span>
+            Continue with Google
+          </a>
+        </div>
+        
+        <p class="terms-note" style="font-size: 0.75rem; color: var(--text-light); margin: 1.5rem 0 0; line-height: 1.4;">
+          By signing up you agree to our <a href="#" class="auth-link">Terms of Service</a> and <a href="#" class="auth-link">Privacy Policy</a>.
+        </p>
+        
+        <p class="auth-switch">
+          Already have an account? <a href="{% url 'account_login' %}">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<script>
+// Password toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const toggleButtons = document.querySelectorAll('.password-toggle-btn');
+  
+  toggleButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const targetId = this.getAttribute('data-toggle-password');
+      const targetInput = document.getElementById(targetId);
+      
+      if (targetInput) {
+        const isPassword = targetInput.type === 'password';
+        targetInput.type = isPassword ? 'text' : 'password';
+        this.textContent = isPassword ? '🙈' : '👁️';
+        this.classList.toggle('revealed', isPassword);
+      }
+    });
+  });
+});
+</script>
+
+{% endblock %}

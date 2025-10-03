@@ -1,0 +1,15 @@
+/* Simple test CSS to verify loading */
+body {
+    background-color: #f0f8ff !important;
+    color: #333 !important;
+}
+
+h1 {
+    color: #ff6b6b !important;
+    font-size: 2rem !important;
+}
+
+nav {
+    background-color: #4ecdc4 !important;
+    padding: 1rem !important;
+}
